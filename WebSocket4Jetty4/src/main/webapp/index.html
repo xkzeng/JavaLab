@@ -1,0 +1,156 @@
+
+<HTML>
+<HEAD>
+   <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <LINK type="text/css" rel="stylesheet" href="css/mystyle.css"/>
+   <TITLE>Jetty基于Servlet方式桥接WebSocket</TITLE>
+   <SCRIPT type = "text/javascript">
+     var webSocketServerAddr = "ws://192.168.2.103:9000/jetty/websocket4/chat";
+     function showMessage(strMessage)
+     {
+       var messagePanel = document.getElementById("messagePanel");
+       var messageText = messagePanel.innerHTML;
+       if(messageText.length == 0)
+       {
+         messageText = "&gt;&gt;&gt;&nbsp;" + strMessage;
+       }
+       else
+       {
+         messageText = messageText.replace("&gt;&gt;&gt;", "");
+         messageText = messageText + "<HR> &gt;&gt;&gt;&nbsp;" + strMessage;
+       }
+       messagePanel.innerHTML = messageText;
+     }
+     
+     function onClearMessage()
+     {
+    	 document.getElementById("messagePanel").innerHTML = "";
+     }
+     
+     var webSocket = null;
+     
+     function connectWebSocket(url)
+     {
+    	 try
+    	 {
+    		 if("WebSocket" in window) //当前浏览器支持WebSocket
+    		 {
+    			 webSocket = new WebSocket(url);
+    		 }
+    		 else if("MozWebSocket" in window) //当前浏览器支持MozWebSocket
+    		 {
+    			 webSocket = new MozWebSocket(url);
+    		 }
+    		 else
+    		 {
+    			 webSocket = null;
+    			 showMessage("<FONT size = 5 color = RED>当前浏览器不支持WebSocket</FONT>");
+    		 }
+    		 
+    		 if(webSocket != null)
+    		 {
+    			 webSocket.onopen = onConnected;
+        		 webSocket.onmessage = onMessage;
+        		 webSocket.onclose = onClosed;
+        		 webSocket.onerror = onError;
+    		 }
+    	 }
+    	 catch(err)
+		 {
+			 showMessage("<FONT size = 5 color = RED>连接异常:" + err + "</FONT>");
+		 }
+     }
+     
+     function onConnectWebSocket()
+     {
+       connectWebSocket(webSocketServerAddr);
+     }
+     
+     function sendMessage(message)
+     {
+    	 webSocket.send(message);
+     }
+     
+     function onSendMessage()
+     {
+    	 var message = document.getElementById("textMessage").value;
+    	 sendMessage(message);
+     }
+     
+     function closeWebSocket()
+     {
+    	 webSocket.close();
+     }
+     
+     function onCloseWebSocket()
+     {
+    	 webSocket.close();
+     }
+     
+     function onConnected()
+     {
+    	 showMessage("WebSocket连接成功");
+     }
+     
+     function onMessage(event)
+     {
+    	 showMessage(event.data);
+     }
+     
+     function onClosed()
+     {
+    	 showMessage("WebSocket连接已关闭");
+     }
+     
+     function onError()
+     {
+    	 showMessage("<FONT size = 5 color = RED>WebSocket连接发生错误</FONT>");
+     }
+     
+     function onWindowClose()
+     {
+       alert("close window");
+    	 closeWebSocket();
+     }
+     
+     window.onbeforeunload = onWindowClose;
+   </SCRIPT>
+</HEAD>
+<BODY>
+    <CENTER>
+      <TABLE width = "32%" border="1" cellspacing="1" cellpadding="1">
+        <TR align="middle" bgcolor="#AEAEAE">
+          <TH colspan = "2"> &nbsp; <FONT size = "5"> Jetty基于Servlet方式桥接WebSocket </FONT> </TH>
+        </TR>
+        <TR>
+          <TD align = "center">
+            <!-- &nbsp;<A href = "javascript: window.history.back();"> <FONT size = "4" face = "新宋体"> ${content} </FONT> </A> -->
+            <INPUT id = "textMessage" name = "textMessage" type = "text" size = "60" />
+          </TD>
+          <TD align = "center">
+            <BUTTON type = "button" id = "btnSendMessage" name = "btnSendMessage" onClick = "javascript:onSendMessage();">发送消息</BUTTON>
+          </TD>
+        </TR>
+        <TR>
+          <TD align = "center" colspan = "2">
+            &nbsp;<BUTTON type = "button" id = "btnLogin" name = "btnLogin" onClick = "javascript:onConnectWebSocket();">连接登录</BUTTON>
+            &nbsp;<BUTTON type = "button" id = "btnClose" name = "btnClose" onClick = "javascript:onCloseWebSocket();">关闭连接</BUTTON>
+            &nbsp;<BUTTON type = "button" id = "btnClear" name = "btnClear" onClick = "javascript:onClearMessage();">清空消息</BUTTON>
+          </TD>
+        </TR>
+      </TABLE>
+      <BR>
+      
+      <TABLE width = "32%" border="1" cellspacing="1" cellpadding="1">
+        <TR align="middle" bgcolor="#AEAEAE">
+          <TH> &nbsp; <FONT size = "5">消息</FONT> </TH>
+        </TR>
+        <TR>
+          <TD>
+            <P id = "messagePanel" name = "messagePanel"></P>
+          </TD>
+        </TR>
+      </TABLE>
+    </CENTER>
+</BODY>
+</HTML>

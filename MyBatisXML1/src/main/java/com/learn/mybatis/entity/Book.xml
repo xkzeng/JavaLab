@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.learn.mybatis.entity.Book">
+  <select id="selectAllBooks" resultType="Book">
+    SELECT * FROM books
+  </select>
+
+  <select id="selectBookByBookId" parameterType="int" resultType="Book">
+    SELECT * FROM books WHERE bookId = #{bookId}
+  </select>
+</mapper>

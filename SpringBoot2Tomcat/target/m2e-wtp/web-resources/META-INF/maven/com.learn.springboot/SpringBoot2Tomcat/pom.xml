@@ -1,0 +1,103 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.learn.springboot</groupId>
+  <artifactId>SpringBoot2Tomcat</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+  <name>SpringBoot2Tomcat</name>
+  <description>SpringBoot应用部署到Tomcat中,使Tomcat启动时自动启动SpringBoot应用</description>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+    
+    <pluginManagement>
+        <plugins>
+           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-war-plugin</artifactId>
+              <configuration>
+                 <warName>SpringBoot2Tomcat</warName>
+                 <failOnMissingWebXml>false</failOnMissingWebXml>
+              </configuration>
+           </plugin>
+        </plugins>
+     </pluginManagement>
+     <finalName>SpringBoot2Tomcat</finalName>
+  </build>
+  
+  <profiles>
+     <profile>
+        <id>jdk-1.8</id>
+        <activation>
+           <activeByDefault>true</activeByDefault>
+           <jdk>1.8</jdk>
+        </activation>
+        <properties>
+           <maven.compiler.source>1.8</maven.compiler.source>
+           <maven.compiler.target>1.8</maven.compiler.target>
+           <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+        </properties>
+     </profile>
+  </profiles>
+  
+  <properties>
+     <!-- JDK版本号 -->
+     <jdk.version>1.8</jdk.version>
+     
+     <!-- 自定义库simple-wrapper的版本号 -->
+     <wrapper.version>1.0.0</wrapper.version>
+     
+     <!-- SpringBoot版本号 -->
+     <springboot.version>2.0.6.RELEASE</springboot.version>
+  </properties>
+  
+  <!-- 集成SpringBoot的父包 -->
+  <parent>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-parent</artifactId>
+     <version>2.0.6.RELEASE</version>
+     <relativePath />
+  </parent>  
+  
+  <dependencies>
+    <!-- 自定义库simple-wrapper -->
+     <dependency>
+        <groupId>com.wrapper</groupId>
+        <artifactId>simple-wrapper</artifactId>
+        <version>${wrapper.version}</version>
+        <scope>runtime</scope>
+     </dependency>
+     
+     <!-- Compile -->
+     <!-- 添加对功能spring-boot-starter-web的依赖 -->
+     <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>2.0.6.RELEASE</version>
+        <!-- exclusions> 取消内置的Tomcat部署方式 (关键点1 方式1)
+           <exclusion>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-tomcat</artifactId>
+           </exclusion>
+        </exclusions!-->
+     </dependency>
+    
+     <!-- 更改默认的部署方式依赖:取消内置的Tomcat部署方式 (关键点1 方式2)-->
+     <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <version>2.0.6.RELEASE</version>
+        <scope>provided</scope>
+     </dependency>
+    
+  </dependencies>
+</project>

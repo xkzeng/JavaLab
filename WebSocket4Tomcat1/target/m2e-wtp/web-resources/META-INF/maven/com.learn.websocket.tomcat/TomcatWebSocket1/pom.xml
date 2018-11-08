@@ -1,0 +1,155 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.learn.websocket.tomcat</groupId>
+  <artifactId>TomcatWebSocket1</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+  <name>TomcatWebSocket1</name>
+  <description>实践Tomcat基于注解实现的WebSocket</description>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+    
+    <pluginManagement>
+        <plugins>
+           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-war-plugin</artifactId>
+              <configuration>
+                 <failOnMissingWebXml>false</failOnMissingWebXml>
+              </configuration>
+           </plugin>
+        </plugins>
+     </pluginManagement>
+  </build>
+  
+  <profiles>
+     <profile>
+        <id>jdk-1.7</id>
+        <activation>
+           <activeByDefault>true</activeByDefault>
+           <jdk>1.7</jdk>
+        </activation>
+        <properties>
+           <maven.compiler.source>1.7</maven.compiler.source>
+           <maven.compiler.target>1.7</maven.compiler.target>
+           <maven.compiler.compilerVersion>1.7</maven.compiler.compilerVersion>
+        </properties>
+     </profile>
+  </profiles>
+  
+  <!-- 自定义"属性值/变量/宏",以便于后面引用 -->
+  <properties>
+     <!-- JDK版本 -->
+     <jdk.version>1.8</jdk.version>
+     
+     <!-- 自定义库simple-wrapper的版本号 -->
+     <wrapper.version>1.0.0</wrapper.version>
+     
+     <!-- Servet API版本号 -->
+     <servlet.version>4.0.1</servlet.version>
+     
+     <!-- JSP API版本号 -->
+     <jsp.version>2.3.3</jsp.version>
+     
+     <!-- JSTL版本号 -->
+     <jstl.version>1.2</jstl.version>
+     
+     <!-- Taglibs标签库版本号 -->
+     <taglibs.version>1.1.2</taglibs.version>
+     
+     <!-- FreeMarker版本号 -->
+     <freemarker.version>2.3.28</freemarker.version>
+     
+     <!-- Tomcat WebSocket版本号 -->
+     <tomcat-websocket.version>9.0.12</tomcat-websocket.version>
+  </properties>
+  
+  <dependencies>
+     <!-- 自定义库simple-wrapper -->
+     <dependency>
+        <groupId>com.wrapper</groupId>
+        <artifactId>simple-wrapper</artifactId>
+        <version>${wrapper.version}</version>
+        <scope>runtime</scope>
+     </dependency>
+     
+     <!-- Servet API -->
+  	 <!-- dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-servlet-api</artifactId>
+        <version>${servlet.version}</version>
+        <scope>compile</scope>
+  	 </dependency -->
+     <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>${servlet.version}</version>
+        <scope>provided</scope>
+     </dependency>
+     
+     <!-- JSP API -->
+     <dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>javax.servlet.jsp-api</artifactId>
+        <version>${jsp.version}</version>
+        <scope>provided</scope>
+     </dependency>
+     
+     <!-- JSTL -->
+     <dependency>
+        <groupId>javax.servlet</groupId> <!-- 这个依赖导入的写法正确 -->
+        <artifactId>jstl</artifactId>
+        <version>${jstl.version}</version>
+     </dependency>
+     
+     <!-- dependency>
+        <groupId>javax.servlet.jsp.jstl</groupId> 这个依赖导入的写法错误,会导致JSTL不能正常使用;
+        <artifactId>jstl</artifactId>
+        <version>${jstl.version}</version>
+     </dependency>
+     
+     <dependency>
+        <groupId>jstl</groupId> 这个依赖导入的写法正确;
+        <artifactId>jstl</artifactId>
+        <version>${jstl.version}</version>
+     </dependency -->
+     
+     <!-- Taglibs标签库 -->
+     <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>${taglibs.version}</version>
+     </dependency>
+     
+     <!-- FreeMarker -->
+     <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${freemarker.version}</version>
+     </dependency>
+     
+     <!-- WebSocket: In Tomcat -->
+     <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-websocket</artifactId>
+        <version>${tomcat-websocket.version}</version>
+     </dependency>
+     
+     <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-websocket</artifactId>
+        <version>${tomcat-websocket.version}</version>
+     </dependency>
+     
+  </dependencies>
+</project>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<HTML>
+  <HEAD>
+    <META charset="UTF-8"/>
+    <TITLE>校验手机号码</TITLE>
+    
+    <SCRIPT type="text/javascript">
+      function createRequest()
+      {
+    	  console.log("VVVVVV");
+    	  var request = null;
+        if(window.XMLHttpRequest) //for IE7+,Firefox,Chrome,Opera,Safari;
+        {
+          request = new XMLHttpRequest();
+        }
+        else                      //for IE6,IE5
+        {
+          request = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        return request;
+      }
+      
+	    function onLoadPhoneList()
+	    {
+	    	var request = createRequest();
+	      request.open("GET", "http://localhost:9000/load", true);
+	      request.send();
+	      
+	      request.onreadystatechange = function()
+	      {
+	        if(request.readyState == 4 && request.status == 200)
+	        {
+	          var objPhoneList = document.getElementById("panelResult");
+	          objPhoneList.innerHTML = request.responseText;
+	        }
+	        else
+	        {
+	          //document.getElementById("MessagePanel").innerHTML = "Get Book List Error!!";
+	        }
+	      }
+	    }
+	    
+	    function onCheckPhone()
+      {
+        var request = createRequest();
+        request.open("GET", "http://localhost:9000/check", true);
+        request.send();
+        
+        request.onreadystatechange = function()
+        {
+          if(request.readyState == 4 && request.status == 200)
+          {
+            var objPhoneList = document.getElementById("panelResult");
+            objPhoneList.innerHTML = request.responseText;
+          }
+          else
+          {
+            //document.getElementById("MessagePanel").innerHTML = "Error!!";
+          }
+        }
+       }
+    </SCRIPT>
+  </HEAD>
+  
+  <BODY onload="onLoadPhoneList()">
+    <DIV>
+      <TABLE border=1 width="60%">
+        <TR>
+          <TD><BUTTON onclick="onLoadPhoneList()" value="Load">Load</BUTTON></TD>
+          <TD><BUTTON onclick="onCheckPhone()" value="Check">Check</BUTTON></TD>
+        </TR>
+        
+        <TR>
+          <TD colspan=2><P id="panelResult"> </P></TD>
+        </TR>
+      </TABLE>
+    </DIV>
+  </BODY>
+</HTML>

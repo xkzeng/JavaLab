@@ -1,0 +1,18 @@
+
+lpush bookList '{"bookId":100, "bookName":"Java高级编程","author":"乾隆皇帝"}'
+
+lpush bookList '{"bookId":101, "bookName":"Java设计模式","author":"雍正皇帝"}'
+
+lpush bookList '{"bookId":102, "bookName":"C++游戏编程","author":"康熙皇帝"}'
+
+lpush bookList '{"bookId":103, "bookName":"C高级编程","author":"努尔哈赤"}'
+
+lpush bookList '{"bookId":104, "bookName":"C++设计模式","author":"皇太极"}'
+
+lpush bookList '{"bookId":105, "bookName":"Java数据结构","author":"汉武大帝"}'
+
+lpush bookList '{"bookId":106, "bookName":"Java网络应用","author":"嘉庆皇帝"}'
+
+lpush bookList '{"bookId":107, "bookName":"JavaWeb开发","author":"朱元璋"}'
+
+lpush bookList '{"bookId":108, "bookName":"Spark开发指南","author":"毛泽东"}'

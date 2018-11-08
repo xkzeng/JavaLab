@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+  xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+  xmlns = "http://www.springframework.org/schema/beans"
+  xsi:schemaLocation = "http://www.springframework.org/schema/beans
+                       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
+>
+
+<!--
+   xmlns:mvc="http://www.springframework.org/schema/mvc"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:aop="http://www.springframework.org/schema/aop"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation =
+                       http://www.springframework.org/schema/mvc
+                       http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                       http://www.springframework.org/schema/context
+                       http://www.springframework.org/schema/context/spring-context-4.3.xsd
+                       http://www.springframework.org/schema/aop
+                       http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                       http://www.springframework.org/schema/tx
+                       http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+-->
+    
+    <!-- STEP1: 配置基于注解的处理器映射器组件(只配置,不开发);
+         使用RequestMappingHandlerMapping类充当映射器;
+    -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    
+    <!-- STEP2: 配置基于注解的处理器适配器组件(只配置,不开发);
+         使用RequestMappingHandlerAdapter类充当映射器;
+    -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" />
+    
+    <!-- STEP3: 配置处理器控制器(需开发);
+         控制器是开发者自己实现的,用于实现HTTP请求的业务逻辑控制;
+    -->
+    <bean class="com.learn.spring.controller.HelloController" />
+    
+    <!-- STEP4: 配置动态视图解析器组件(只配置,不开发)
+         视图解析器用于解析视图,也就是把数据渲染到视图里面;
+         默认使用JSP模板,需要进行JSTL标签的处理,CLASSPATH指定的路径里面需要有JSTL的包;
+         在这里配置动态视图,控制器自己选择需要渲染的视图;
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+       <!-- 返回视图页面的前缀 -->
+       <property name="prefix" value="/WEB-INF/view/"></property>
+       <!-- 返回视图页面的后缀 -->
+       <property name="suffix" value=".jsp"></property>
+    </bean>
+</beans>

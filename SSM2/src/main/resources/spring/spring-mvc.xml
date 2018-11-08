@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+  xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+  xmlns = "http://www.springframework.org/schema/beans"
+  xmlns:mvc ="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation = "http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+>
+
+<!--
+   xmlns:aop="http://www.springframework.org/schema/aop"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation =
+                       http://www.springframework.org/schema/aop
+                       http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                       http://www.springframework.org/schema/tx
+                       http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+-->
+    
+    <!-- STEP1: 自动配置基于注解的处理器映射器组件和处理器适配器组件(只配置,不开发);
+         默认自动使用RequestMappingHandlerMapping类充当映射器;
+         默认自动使用RequestMappingHandlerAdapter类充当适配器;
+         如果要使用标签<mvc:annotation-driven>,则需要在文件头部的<beans>标签中指定"xmlns:mvc",
+         并在xsi:schemaLocation中指定spring-mvc的版本信息;
+    -->
+    <mvc:annotation-driven/>
+    
+    <!-- STEP2: 自动配置处理器控制器以及其它注解修饰的组件(需开发);
+         控制器是开发者自己实现的,用于实现HTTP请求的业务逻辑控制;
+         自动配置就是自动扫描Controller、Service、Resource、Component等注解所修饰的类所在的包下面的全部类;
+         如果要使用标签<context:component-scan>,则需要在文件头部的<beans>标签中指定"xmlns:context",
+         并在xsi:schemaLocation中指定spring-context的版本信息;
+    -->
+    <context:component-scan base-package="com.learn.ssm.controller,com.learn.ssm.service"/>
+    
+    <!-- STEP3:配置对静态资源的处理
+         org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler;
+         它像一个检查员一样,对进入DispatcherServlet的URL请求进行筛查,
+         如果发现是对静态资源的请求,则将该请求交由Web应用服务器默认的Servlet处理;
+         如果发现是对动态资源的请求,则将该请求交由DispatcherServlet继续处理;
+    -->
+    <mvc:default-servlet-handler/>
+    
+    <!--
+         对静态资源的访问映射;
+         因为SpringMVC会拦截所有请求,导致JSP页面中对js和css文件的引用也会被拦截;
+         配置这一项之后,可以把对静态资源的访问请求交给项目的默认拦截器处理,而不再交给SpringMVC了
+     -->
+    <mvc:resources location = "/WEB-INF/static/" mapping = "/static/**"/>
+    
+    <!-- STEP4: 配置动态视图解析器组件(只配置,不开发)
+         此处配置使用JSP作为渲染模板的视图解析器,它使用的是JSTL规则;
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+       <property name = "viewClass" value = "org.springframework.web.servlet.view.JstlView"></property>
+       <!-- 返回视图页面的前缀 -->
+       <property name = "prefix" value = "/WEB-INF/view/"></property>
+       <!-- 返回视图页面的后缀 -->
+       <property name = "suffix" value = ".jsp"></property>
+       <!-- 视图内容的类型 -->
+       <property name = "contentType" value = "text/html;charset=UTF-8"/>
+       <!-- 配置多视图解析器时的顺序编号 -->
+       <property name = "order" value = "0"/>
+    </bean>
+</beans>

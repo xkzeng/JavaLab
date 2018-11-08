@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+  xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+  xmlns = "http://www.springframework.org/schema/beans"
+  xmlns:mvc ="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation = "http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+>
+
+<!--
+   xmlns:aop="http://www.springframework.org/schema/aop"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation =
+                       http://www.springframework.org/schema/aop
+                       http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                       http://www.springframework.org/schema/tx
+                       http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+-->
+    
+    <!-- STEP1: 自动配置基于注解的处理器映射器组件和处理器适配器组件(只配置,不开发);
+         默认自动使用RequestMappingHandlerMapping类充当映射器;
+         默认自动使用RequestMappingHandlerAdapter类充当适配器;
+         如果要使用标签<mvc:annotation-driven>,则需要在文件头部的<beans>标签中指定"xmlns:mvc",
+         并在xsi:schemaLocation中指定spring-mvc的版本信息;
+    -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+    
+    <!-- STEP2: 自动配置处理器控制器(需开发);
+         控制器是开发者自己实现的,用于实现HTTP请求的业务逻辑控制;
+         自动配置就是自动扫描Controller、Service、Resource、Component等注解所修饰的类所在的包下面的全部类;
+         如果要使用标签<context:component-scan>,则需要在文件头部的<beans>标签中指定"xmlns:context",
+         并在xsi:schemaLocation中指定spring-context的版本信息;
+    -->
+    <context:component-scan base-package="com.learn.mybatis.controller"></context:component-scan>
+    
+    
+    <!-- STEP3: 配置动态视图解析器组件(只配置,不开发)
+         此处配置使用FreeMarker作为视图渲染组件;
+    -->
+    <!-- 配置FreeMarker运行环境 -->
+    <!--bean id = "freeMarkerConfig" class = "org.springframework.beans.factory.config.PropertiesFactoryBean"-->
+       <!-- FreeMarker配置文件路径 -->
+       <!--property name = "location" value = "classpath:properties/freemarker.properties" /-->
+    <!--/bean -->
+    
+    <!-- 配置FreeMarker的运行环境 -->
+    <bean id = "freeMarkerConfig" class = "org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+       <!-- property name = "freemarkerSettings" ref = "freeMarkerConfig"></property-->
+       <!-- FreeMarker模板文件路径 -->
+       <property name = "templateLoaderPath" value = "/WEB-INF/"></property>
+       <!-- 缺省编码 -->
+       <property name = "defaultEncoding" value = "UTF-8"></property>
+       <!-- FreeMarker能够识别的变量 -->
+       <property name = "freemarkerVariables">
+          <map>
+             <!-- 启用FreeMarker对XML的转义功能 -->
+             <entry key = "xml_escape" value-ref = "fmXmlEscape" />
+          </map>
+       </property>
+    </bean>
+    
+    <!-- 配置FreeMarker转义XML的实现类 -->
+    <bean id = "fmXmlEscape" class = "freemarker.template.utility.XmlEscape" />
+    
+    <!-- FreeMarker视图解析器 -->
+    <bean id = "freeMarkerViewResolver" class = "org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+       <!-- 视图类 -->
+       <property name = "viewClass" value = "org.springframework.web.servlet.view.freemarker.FreeMarkerView"></property>
+       <!-- 返回视图页面的前缀 -->
+       <property name = "prefix" value = "view/"></property> <!-- 最终的页面路径是"templateLoaderPath的值+prefix的值" -->
+       <!-- 返回视图页面的后缀 -->
+       <property name = "suffix" value = ".ftl"></property>
+       <!-- 需要渲染的内容的类型 -->
+       <property name = "contentType" value = "text/html;charset=UTF-8"></property>
+       <!-- 是否启动缓存 -->
+       <property name = "cache" value = "false"></property>
+       <!-- 多视图解析器时用于指定视图解析器的顺序号 -->
+       <property name="order" value = "0"></property>
+    </bean>
+</beans>

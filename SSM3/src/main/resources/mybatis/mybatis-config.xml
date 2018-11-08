@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+  <typeAliases>
+     <package name="com.learn.ssm.entity" /> <!-- 自动扫描实体类(Java Bean)所在的包,并注册扫描到的实体类(Java Bean) -->
+  </typeAliases>
+
+  <!--
+      不再通过标签<environments>及其子标签<environment>配置数据库连接信息;
+      因为数据库连接信息已经在文件spring-mybatis.xml中配置过了;
+  -->
+  
+  <!-- 该功能已经集成到文件spring-mybatis.xml中了; -->
+  <!--
+      SSM集成环境中在这里配置mappers的扫描注册是无效的;
+      只能在文件spring-mybatis.xml文件中配置自动扫描映射器接口类和映射器文件;
+  -->
+  <!-- mappers -->
+    <!-- package name="com.learn.mybatis.mapper"/ --> <!-- 自动扫描接口所在的包,并把扫描到的接口注册为接口映射器 -->
+  <!--/mappers -->
+</configuration>

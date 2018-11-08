@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    这个namespace的值很关键,它的值与接口IBookMapper的完整包名一致,
+    就是通过它与IBookMapper接口建立映射关系的;
+-->
+<mapper namespace="com.learn.mybatis.mapper.IBookMapper">
+  <select id="selectAllBooks" resultType="Book">
+    SELECT * FROM books
+  </select>
+
+  <select id="selectBookByBookId" parameterType="int" resultType="Book">
+    SELECT * FROM books WHERE bookId = #{bookId}
+  </select>
+</mapper>

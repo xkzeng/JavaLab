@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+  xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+  xmlns = "http://www.springframework.org/schema/beans"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:mvc ="http://www.springframework.org/schema/mvc"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation = "http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+>
+
+    <!-- 加载属性配置文件(取代mybatis-config.xml文件中的标签<properties>引入外部属性配置文件的功能) -->
+    <bean id = "propertyConfig" class = "org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name = "location" value = "classpath:properties/db.properties"/>
+    </bean>
+    <!-- 下面这种加载属性配置文件的方式也可以 -->
+    <!-- context:property-placeholder location = "classpath:properties/db.properties"/ -->
+    
+    <!-- 配置数据源组件:连接数据库的基本信息(取代mybatis-config.xml文件中的标签<environments>及其子标签<environment>和<dataSource>) -->
+    <bean id = "dataSource" class = "org.springframework.jdbc.datasource.DriverManagerDataSource">
+       <property name = "driverClassName" value = "${db.driver}"/>
+       <property name = "url" value = "${db.url}"/>
+       <property name = "username" value = "${db.username}"/>
+       <property name = "password" value = "${db.password}"/>
+    </bean>
+    
+    <!-- 配置连接数据库用的SessionFactory Bean组件 -->
+    <!-- Spring与MyBatis的完美结合,不需要配置MyBatis自己的配置文件 -->
+    <bean id = "sqlSessionFactory" class = "org.mybatis.spring.SqlSessionFactoryBean">
+       <!-- 指定SqlSessionFactory Bean所使用的数据源配置 -->
+       <property name = "dataSource" ref = "dataSource"/>
+       <!-- 指定MyBatis的配置文件mybatis-config.xml的位置 -->
+       <property name = "configLocation" value = "classpath:mybatis/mybatis-config.xml"/>
+       <!-- 自动扫描接口映射器的映射文件XXXMapper.xml,指定扫描的路径 -->
+       <property name = "mapperLocations" value = "classpath:com/learn/ssm/mapper/*.xml"/>
+    </bean>
+    
+    <!--
+        自动扫描接口映射器Mapper(DAO),指定接口映射器Mapper(DAO)所在的包;
+        这个配置等价于文件mybatis/mybatis-config.xml中的标签<mappers>的配置;
+    -->
+    <bean id = "mapperConfig" class = "org.mybatis.spring.mapper.MapperScannerConfigurer">
+       <property name = "basePackage" value = "com.learn.ssm.mapper"/>
+       <property name = "sqlSessionFactoryBeanName" value = "sqlSessionFactory"/>
+    </bean>
+    
+    <!-- 配置事务管理组件 -->
+    <bean id = "transactionManager" class = "org.springframework.jdbc.datasource.DataSourceTransactionManager">
+       <!-- 注入数据源dataSource -->
+       <property name = "dataSource" ref = "dataSource"/>
+    </bean>
+    
+    <!-- 启用事务组件的注解扫描 -->
+    <tx:annotation-driven transaction-manager = "transactionManager"/>
+</beans>
