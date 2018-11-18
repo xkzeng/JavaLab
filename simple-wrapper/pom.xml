@@ -5,4 +5,46 @@
   <version>1.0.0</version>
   <name>simple-wrapper</name>
   <description>平时使用的简单功能的包装</description>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+    
+    <pluginManagement>
+        <plugins>
+           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-war-plugin</artifactId>
+              <configuration>
+                 <!-- warName>SchoolManager</warName -->
+                 <failOnMissingWebXml>false</failOnMissingWebXml>
+              </configuration>
+           </plugin>
+        </plugins>
+     </pluginManagement>
+     <!-- finalName>SchoolManager</finalName -->
+  </build>
+  
+  <profiles>
+     <profile>
+        <id>jdk-1.8</id>
+        <activation>
+           <activeByDefault>true</activeByDefault>
+           <jdk>1.8</jdk>
+        </activation>
+        <properties>
+           <maven.compiler.source>1.8</maven.compiler.source>	
+           <maven.compiler.target>1.8</maven.compiler.target>
+           <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+        </properties>
+     </profile>
+  </profiles>
 </project>
