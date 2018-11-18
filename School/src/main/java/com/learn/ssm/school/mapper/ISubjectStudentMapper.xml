@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    ******************************** 一门课程被多位学生选修            ********************************
+    ******************************** subjects表为左表,students表为右表 ********************************
+    ******************************** students_subjects表为选课关系表   ********************************
+-->
+<mapper namespace = "com.learn.ssm.school.mapper.ISubjectStudentMapper">
+  <!-- 增 -->
+  <insert id = "insertSubjectStudent">
+     INSERT INTO students_subjects(studentId, subjectId)
+     VALUES(#{studentId}, #{subjectId})
+  </insert>
+  
+  <insert id = "insertSubjectStudents">
+     INSERT INTO students_subjects(studentId, subjectId)
+     VALUES
+     <foreach item = "studentId" collection = "ids" separator = ",">
+        (#{studentId}, #{subjectId})
+     </foreach>
+  </insert>
+  
+  <insert id = "insertStudentSubjects">
+     INSERT INTO students_subjects(studentId, subjectId)
+     VALUES
+     <foreach item = "subjectId" collection = "ids" separator = ",">
+        (#{studentId}, #{subjectId})
+     </foreach>
+  </insert>
+  
+  <!-- 删 -->
+  <delete id = "deleteAllSubjectStudents">
+     DELETE FROM students_subjects
+  </delete>
+  
+  <delete id = "deleteSubjectStudentsBySubjectId">
+     DELETE FROM students_subjects
+     WHERE subjectId = #{subjectId}
+  </delete>
+  
+  <delete id = "deleteSubjectStudentsBySubjectIds">
+     DELETE FROM students_subjects
+     WHERE subjectId in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteStudentSubjectsByStudentId">
+     DELETE FROM students_subjects
+     WHERE studentId = #{studentId}
+  </delete>
+  
+  <delete id = "deleteStudentSubjectsByStudentIds">
+     DELETE FROM students_subjects
+     WHERE studentId in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteSubjectStudentByRowId">
+     DELETE FROM students_subjects
+     WHERE id = #{id}
+  </delete>
+  
+  <delete id = "deleteSubjectStudentByRowIds">
+     DELETE FROM students_subjects
+     WHERE id in
+     <foreach item = "rowId" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{rowId}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteSubjectStudentBySubjectIdAndStudentId">
+     DELETE FROM students_subjects
+     WHERE subjectId = #{subId} AND studentId = #{stuId}
+  </delete>
+  
+  <!-- 改 -->
+  <!-- 无业务需求 -->
+  
+  <!-- 查 -->
+  <!--
+      ******************************** 使用POJO类StudentsSubjects        ********************************
+  -->
+  <sql id = "ColsSubjectsStudents">
+     sub.id AS subjectId,
+     sub.name AS subjectName,
+     ss.id AS rowId,
+     stu.id AS studentId,
+     stu.name AS studentName,
+     stu.sex AS studentSex,
+     stu.age AS studentAge
+  </sql>
+  
+  <sql id = "SqlSubjectsStudentsTablesJoined">
+     LEFT OUTER JOIN students_subjects AS ss ON sub.id = ss.subjectId
+     LEFT OUTER JOIN students AS stu ON ss.studentId = stu.id
+  </sql>
+  
+  <resultMap id = "MapSubjectsStudents" type = "StudentsSubjects">
+     <id column = "rowId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+     <result column = "studentId" jdbcType = "INTEGER" property = "studentId" javaType = "int"/>
+     <result column = "subjectId" jdbcType = "INTEGER" property = "subjectId" javaType = "int"/>
+     <result column = "studentName" jdbcType = "VARCHAR" property = "studentName" javaType = "String"/>
+     <result column = "studentSex" jdbcType = "INTEGER" property = "studentSex" javaType = "int"/>
+     <result column = "studentAge" jdbcType = "INTEGER" property = "studentAge" javaType = "int"/>
+     <result column = "subjectName" jdbcType = "VARCHAR" property = "subjectName" javaType = "String"/>
+  </resultMap>
+  
+  <select id = "selectAllSubjectsStudents" resultMap = "MapSubjectsStudents">
+     SELECT
+     <include refid = "ColsSubjectsStudents"/>
+     FROM subjects AS sub
+     <include refid = "SqlSubjectsStudentsTablesJoined"/>
+     ORDER BY subjectId ASC
+  </select>
+  
+  <select id = "selectSubjectStudentsBySubjectId" resultMap = "MapSubjectsStudents">
+     SELECT
+     <include refid = "ColsSubjectsStudents"/>
+     FROM subjects AS sub
+     <include refid = "SqlSubjectsStudentsTablesJoined"/>
+     WHERE sub.id = #{id} AND (ss.id > 0 OR stu.id > 0)
+     ORDER BY stu.id ASC
+  </select>
+  
+  <!--
+      ******************************** 使用POJO类Student和Subject ********************************
+  -->
+  <resultMap id = "MapSubjectToStudents" type = "Subject">
+     <!-- 一门课程 -->
+     <id column = "subjectId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+     <result column = "subjectName" jdbcType = "VARCHAR" property = "name" javaType = "String"/>
+     
+     <!-- 多位学生 -->
+     <collection property = "students" javaType = "ArrayList" ofType = "Student">
+        <id column = "studentId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+        <result column = "studentName" jdbcType = "VARCHAR" property = "name" javaType = "String"/>
+        <result column = "studentSex" jdbcType = "INTEGER" property = "sex" javaType = "int"/>
+        <result column = "studentAge" jdbcType = "INTEGER" property = "age" javaType = "int"/>
+     </collection>
+  </resultMap>
+  
+  <select id = "selectAllSubjectsToStudents" resultMap = "MapSubjectToStudents">
+     SELECT
+     <include refid = "ColsSubjectsStudents"/>
+     FROM subjects AS sub
+     <include refid = "SqlSubjectsStudentsTablesJoined"/>
+     ORDER BY subjectId ASC
+  </select>
+  
+  <select id = "selectSubjectToStudentsBySubjectId" resultMap = "MapSubjectToStudents">
+     SELECT
+     <include refid = "ColsSubjectsStudents"/>
+     FROM subjects AS sub
+     <include refid = "SqlSubjectsStudentsTablesJoined"/>
+     WHERE sub.id = #{id} AND (ss.id > 0 OR stu.id > 0)
+     ORDER BY stu.id ASC
+  </select>
+  
+</mapper>

@@ -1,0 +1,58 @@
+TABLE
+{
+  margin: 1px;
+  padding: 1px;
+  font-family: 新宋体;
+  font-size: 14px;
+  border-color : #646464;
+  border-style: solid;
+  border-width: 1px;
+  border-collapse:collapse;
+  cursor: text;
+}
+
+TH
+{
+  border-color: #646464;
+  border-style: solid;
+  border-width: 1px;
+}
+
+TD
+{
+  border-color: #646464;
+  border-style: solid;
+  border-width: 1px;
+}
+
+DIV
+{
+  font-family: 新宋体;
+  background: #F2F2F2;
+  margin: 0 auto;
+  width: 80%;
+  padding: 10px;
+  /*text-align: center;*/
+}
+
+A:link /* 未被访问过的链接样式 */
+{
+  text-decoration: none;
+  color: blue;
+}
+
+A:visited /* 已被访问过的链接样式 */
+{
+  text-decoration: none;
+  color: red;
+}
+
+A:hover /* 鼠标悬停在链接上时的样式 */
+{
+  text-decoration: none;
+}
+
+A:active /* 鼠标正在点击的链接样式 */
+{
+  text-decoration: none;
+}

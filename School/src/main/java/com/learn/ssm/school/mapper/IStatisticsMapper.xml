@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    统计查询映射器
+-->
+<mapper namespace = "com.learn.ssm.school.mapper.IStatisticsMapper">
+
+  <!-- 课程热度统计查询 -->
+  <resultMap id = "SqlColsSubjectSelectCount" type = "SubjectStatistics">
+     <!-- 主键映射:查询结果集中没有主键,不映射主键 -->
+     <!-- id column = "" jdbcType = "INTEGER" property = "id" javaType = "int"/ -->
+     <!-- 普通字段映射 -->
+     <result column = "subjectId" jdbcType = "INTEGER" property = "subjectId" javaType = "int"/>
+     <result column = "subjectName" jdbcType = "VARCHAR" property = "subjectName" javaType = "String"/>
+     <result column = "selectCount" jdbcType = "INTEGER" property = "selectCount" javaType = "int"/>
+  </resultMap>
+  
+  <select id = "selectSubjectSelectCount" resultMap = "SqlColsSubjectSelectCount">
+     SELECT
+        subjectId, subjectName, COUNT(studentId) AS selectCount
+     FROM
+        (
+          SELECT
+            sub.id AS subjectId,
+            sub.`name` AS subjectName,
+            ss.studentId AS studentId
+          FROM subjects AS sub
+          LEFT OUTER JOIN students_subjects AS ss ON sub.id = ss.subjectId
+        ) AS tv
+     GROUP BY subjectId, subjectName
+     ORDER BY selectCount DESC, subjectId ASC
+  </select>
+</mapper>

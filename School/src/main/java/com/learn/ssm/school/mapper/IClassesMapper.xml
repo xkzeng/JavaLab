@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    这个namespace的值很关键,它的值与接口IClassesMapper的完整包名一致,
+    就是通过它与IClassesMapper接口建立映射关系的;
+-->
+<mapper namespace = "com.learn.ssm.school.mapper.IClassesMapper">
+  <!-- 启用二级缓存:该缓存功能只对当前mapper的namespace有效 -->
+  <!-- cache/ -->
+  
+  <!-- 班主任信息 -->
+  <!-- 增 -->
+  <insert id = "insertClasses" parameterType = "Classes">
+     INSERT INTO classess
+     <trim prefix = "(" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> id, </if>
+        <if test = "name != null"> name, </if>
+        <if test = "masterTeacher != null and masterTeacher.id != null"> masterteacherId, </if>
+        <if test = "enterTime != null"> entertime, </if>
+        <if test = "leaveTime != null"> leavetime </if>
+     </trim>
+     <trim prefix = "VALUES (" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> #{id}, </if>
+        <if test = "name != null"> #{name}, </if>
+        <if test = "masterTeacher != null and masterTeacher.id != null"> #{masterTeacher.id} </if>
+        <if test = "enterTime != null"> #{enterTime}, </if>
+        <if test = "leaveTime != null"> #{leaveTime} </if>
+     </trim>
+  </insert>
+  
+  <!-- 删 -->
+  <delete id = "deleteAllClasses">
+     DELETE FROM classess
+  </delete>
+  
+  <delete id = "deleteClassess">
+     DELETE FROM classess
+     WHERE id in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteClasses" parameterType = "Classes">
+     DELETE FROM classess
+     WHERE id = #{id}
+  </delete>
+  
+  <delete id = "deleteClassesById" parameterType = "int">
+     DELETE FROM classess
+     WHERE id = #{classesId}
+  </delete>
+  
+  <!-- 改 -->
+  <update id = "updateClasses" parameterType = "Classes">
+     UPDATE classess
+     <set>
+        <if test = "name != null"> name = #{name},</if>
+        <if test = "masterTeacher != null and masterTeacher.id != null"> masterteacherId = #{masterTeacher.id}, </if>
+        <if test = "entertime != null"> entertime = #{enterTime}, </if>
+        <if test = "leavetime != null"> leavetime = #{leaveTime}  </if>
+     </set>
+     WHERE id = #{classesId}
+  </update>
+  <update id = "updateClassesLeaveTimeById" parameterType = "int">
+     UPDATE classess
+     SET leavetime = NOW()
+     WHERE id = #{classesId}
+  </update>
+  
+  <!-- 查 -->
+  <select id = "selectAllClassess" resultType = "Classes">
+     SELECT *
+     FROM classess
+  </select>
+  
+  <select id = "selectOpenedClassess" resultType = "Classes">
+     SELECT *
+     FROM classess
+     WHERE leavetime IS NULL
+  </select>
+  
+  <select id = "selectClosedClassess" resultType = "Classes">
+     SELECT *
+     FROM classess
+     WHERE leavetime IS NOT NULL
+  </select>
+  
+  <select id = "selectClassesById" parameterType = "int" resultType = "Classes">
+     SELECT *
+     FROM classess
+     WHERE id = #{classesId}
+  </select>
+  
+  <!-- 班级与班主任之间一对一关系的查询结果集映射 -->
+  <resultMap id = "ClassesToMasterTeacherMap" type = "Classes">
+     <!-- 描述主键映射 -->
+     <id column = "classesId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+     
+     <!-- 描述其它普通字段的映射 -->
+     <result column = "classesName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+     <result column = "opendTime" jdbcType = "TIMESTAMP" property = "enterTime" javaType = "java.util.Date"/>
+     <result column = "closeTime" jdbcType = "TIMESTAMP" property = "leaveTime" javaType = "java.sql.Timestamp"/>
+     
+     <!-- 一对一嵌套对象映射 -->
+     <association column = "fkMasterTeacherId" jdbcType = "INTEGER" property = "masterTeacher" javaType = "MasterTeacher">
+        <!-- 描述主键映射 -->
+        <id column = "masterTeacherId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+        
+        <!-- 描述其它普通字段的映射 -->
+        <result column = "masterTeacherName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+        <result column = "joinTime" jdbcType = "TIMESTAMP" property = "enterTime" javaType = "java.util.Date"/>
+        <result column = "quitTime" jdbcType = "TIMESTAMP" property = "leaveTime" javaType = "java.sql.Timestamp"/>
+     </association>
+  </resultMap>
+  
+  <!-- 班级与学生之间一对多关系的查询结果集映射:内嵌结果集映射 -->
+  <resultMap id = "ClassesToStudentsMap" extends = "ClassesToMasterTeacherMap" type = "Classes">
+     <!-- 一对多嵌套对象映射 -->
+     <collection column = "classesId" jdbcType = "INTEGER" property = "students" javaType = "ArrayList" ofType = "Student">
+        <!-- 描述主键映射 -->
+        <id column = "studentId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+        
+        <!-- 描述其它普通字段的映射 -->
+        <result column = "studentName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+        <result column = "sex" jdbcType = "INTEGER" property = "sex" javaType = "int"/>
+        <result column = "age" jdbcType = "INTEGER" property = "age" javaType = "int"/>
+        <result column = "joinSchoolTime" jdbcType = "TIMESTAMP" property = "enterTime" javaType = "java.util.Date"/>
+        <result column = "quitSchoolTime" jdbcType = "TIMESTAMP" property = "leaveTime" javaType = "java.sql.Timestamp"/>
+     </collection>
+  </resultMap>
+  
+  <!-- 班级与学生之间一对多关系的查询结果集映射:执行另外一个SQL -->
+  <resultMap id = "ClassesToStudentsMap2" extends = "ClassesToMasterTeacherMap" type = "Classes">
+     <!-- 一对多嵌套执行另一个被映射的SQL -->
+     <collection column = "classesId" jdbcType = "INTEGER" property = "students" javaType = "ArrayList" ofType = "Student" select = "selectStudentsById">
+     </collection>
+  </resultMap>
+  
+  <resultMap id = "StudentsMap" type = "Student">
+     <!-- 描述主键映射 -->
+     <id column = "studentId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+     
+     <!-- 描述其它普通字段的映射 -->
+     <result column = "studentName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+     <result column = "sex" jdbcType = "INTEGER" property = "sex" javaType = "int"/>
+     <result column = "age" jdbcType = "INTEGER" property = "age" javaType = "int"/>
+     <result column = "joinSchoolTime" jdbcType = "TIMESTAMP" property = "enterTime" javaType = "java.util.Date"/>
+     <result column = "quitSchoolTime" jdbcType = "TIMESTAMP" property = "leaveTime" javaType = "java.sql.Timestamp"/>
+  </resultMap>
+  
+  <!-- 班级与班主任之间一对一关系查询 -->
+  <sql id = "SqlColumnsClassesToMasterTeacher"> <!-- 可重复使用的SQL代码块 -->
+     C.id AS classesId,
+     C.name AS classesName,
+     C.masterteacherId AS fkMasterTeacherId,
+     C.entertime AS opendTime,
+     C.leavetime AS closeTime,
+     MT.id AS masterTeacherId,
+     MT.name  AS masterTeacherName,
+     MT.entertime AS joinTime,
+     MT.leavetime AS quitTime
+  </sql>
+  
+  <!-- 班级与学生之间一对一关系查询 -->
+  <sql id = "SqlColumnsClassesToStudent"> <!-- 可重复使用的SQL代码块 -->
+     S.id AS studentId,
+     S.name AS studentName,
+     sex,
+     age,
+     S.entertime AS joinSchoolTime,
+     S.leavetime AS quitSchoolTime,
+     S.classesId AS studentToClassesId
+  </sql>
+  
+  <!-- 左外连接 -->
+  <select id = "selectAllClassessAndMasterTeachers" resultMap = "ClassesToMasterTeacherMap">
+     SELECT
+       <include refid = "SqlColumnsClassesToMasterTeacher"/>
+     FROM classess AS C
+     LEFT OUTER JOIN master_teachers AS MT
+     ON C.masterteacherId = MT.id
+  </select>
+  
+  <select id = "selectAllClassesAndMasterTeacherById" parameterType = "int" resultMap = "ClassesToMasterTeacherMap">
+     SELECT 
+       <include refid = "SqlColumnsClassesToMasterTeacher"/>
+     FROM classess AS C
+     LEFT OUTER JOIN master_teachers AS MT
+     ON C.masterteacherId = MT.id
+     WHERE C.id = #{classesId}
+  </select>
+  
+  <select id = "selectStudentsById" parameterType = "int" resultMap = "StudentsMap">
+     SELECT
+        <include refid = "SqlColumnsClassesToStudent"/>
+     FROM students AS S
+     WHERE S.classesId = #{classesId}
+  </select>
+  
+  <select id = "selectClassesToStudentsById" parameterType = "int" resultMap = "ClassesToStudentsMap">
+     SELECT
+       <include refid = "SqlColumnsClassesToMasterTeacher"/>,
+       <include refid = "SqlColumnsClassesToStudent"/>
+     FROM classess AS C
+     LEFT OUTER JOIN master_teachers AS MT
+     ON C.masterteacherId = MT.id
+     LEFT OUTER JOIN students AS S
+     ON S.classesId = C.id
+     WHERE C.id = #{id}
+  </select>
+  
+  <select id = "selectClassesToStudentsById2" parameterType = "int" resultMap = "ClassesToStudentsMap2">
+     SELECT
+       <include refid = "SqlColumnsClassesToMasterTeacher"/>
+     FROM classess AS C
+     LEFT OUTER JOIN master_teachers AS MT
+     ON C.masterteacherId = MT.id
+     WHERE C.id = #{id}
+  </select>
+  
+</mapper>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    这个namespace的值很关键,它的值与接口IBookMapper的完整包名一致,
+    就是通过它与IBookMapper接口建立映射关系的;
+-->
+<mapper namespace="com.learn.ssm.school.mapper.IBookMapper">
+  <!-- 出版社信息 -->
+  <!-- 增 -->
+  <insert id = "insertPublisher" parameterType = "Publisher">
+     INSERT INTO publishers
+     <trim prefix = "(" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> id, </if>
+        <if test = "name != null"> name </if>
+     </trim>
+     <trim prefix = "VALUES (" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> #{id}, </if>
+        <if test = "name != null"> #{name} </if>
+     </trim>
+  </insert>
+  
+  <!-- 删 -->
+  <delete id = "deleteAllPublishers">
+     DELETE FROM publishers
+  </delete>
+  
+  <delete id = "deletePublishers">
+     DELETE FROM publishers
+     WHERE id in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deletePublisher" parameterType = "Publisher">
+     DELETE FROM publishers
+     WHERE id = #{id}
+  </delete>
+  
+  <delete id = "deletePublisherById" parameterType = "int">
+     DELETE FROM publishers
+     WHERE id = #{id}
+  </delete>
+  
+  <!-- 查 -->
+  <select id = "selectAllPublishers" resultType = "Publisher">
+     SELECT *
+     FROM publishers
+  </select>
+  
+  <select id = "selectPublisherById" parameterType = "int" resultType = "Publisher">
+     SELECT *
+     FROM publishers
+     WHERE id = #{id}
+  </select>
+  
+  <select id = "selectPublisherByName" parameterType = "String" resultType = "Publisher">
+     SELECT *
+     FROM publishers
+     WHERE name LIKE CONCAT('%', #{name}, '%')
+  </select>
+  
+  <!-- 图书信息 -->
+  <!-- 增 -->
+  <insert id = "insertBook" parameterType = "Book">
+     INSERT INTO books
+     <trim prefix = "(" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> id, </if>
+        <if test = "name != null"> name, </if>
+        <if test = "author != null"> author, </if>
+        <if test = "publisher != null and publisher.id != null"> publisherId </if>
+     </trim>
+     <trim prefix = "VALUES (" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> #{id}, </if>
+        <if test = "name != null"> #{name}, </if>
+        <if test = "author != null"> #{author}, </if>
+        <if test = "publisher != null and publisher.id != null"> #{publisher.id} </if>
+     </trim>
+  </insert>
+  
+  <!-- 删 -->
+  <delete id = "deleteAllBooks">
+     DELETE FROM books
+  </delete>
+  
+  <delete id = "deleteBooks">
+     DELETE FROM books
+     WHERE id in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteBook" parameterType = "Book">
+     DELETE FROM books
+     WHERE id = #{id}
+  </delete>
+  
+  <delete id = "deleteBookById" parameterType = "int">
+     DELETE FROM books
+     WHERE id = #{id}
+  </delete>
+  
+  <!-- 改 -->
+  <sql id = "SqlColumnsUpdateBook">
+     <set>
+        <if test = "name != null"> name = #{name}, </if>
+        <if test = "author != null"> author = #{author}, </if>
+        <if test = "publisherId != null"> publisherId = #{publisherId}  </if>
+     </set>
+  </sql>
+  
+  <update id = "updateBook" parameterType = "Book">
+     UPDATE books
+     <include refid = "SqlColumnsUpdateBook"/>
+     WHERE id = #{id}
+  </update>
+  
+  <update id = "updateBookById" parameterType = "int">
+     UPDATE books
+     <include refid = "SqlColumnsUpdateBook"/>
+     WHERE id = #{id}
+  </update>
+  
+  <!-- 查 -->
+  <resultMap id = "BookPublisherMap" type = "Book">
+     <id column = "bookId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+     <result column = "bookName" jdbcType = "VARCHAR" property = "name" javaType = "String"/>
+     <result column = "bookAuthor" jdbcType = "VARCHAR" property = "author" javaType = "String"/>
+     <association column = "fkPublisherId" jdbcType = "INTEGER" property = "publisher" javaType = "Publisher">
+        <id column = "publisherId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+        <result column = "publisherName" jdbcType = "VARCHAR" property = "name" javaType = "String"/>
+     </association>
+  </resultMap>
+  
+  <sql id = "SqlColumnsBookToPublisher"> <!-- 可重复使用的SQL代码块 -->
+     B.id AS bookId,
+     B.name AS bookName,
+     B.author AS bookAuthor,
+     B.publisherId AS fkPublisherId,
+     P.id AS publisherId,
+     P.name  AS publisherName
+  </sql>
+  
+  <select id = "selectAllBooks" resultMap = "BookPublisherMap">
+     SELECT
+       <include refid = "SqlColumnsBookToPublisher"/>
+     FROM books AS B
+     LEFT OUTER JOIN publishers AS P
+     ON B.publisherId = P.id
+  </select>
+  
+  <select id = "selectBookById" parameterType = "int" resultMap = "BookPublisherMap">
+     SELECT
+       <include refid = "SqlColumnsBookToPublisher"/>
+     FROM books AS B
+     LEFT OUTER JOIN publishers AS P
+     ON B.publisherId = P.id
+     WHERE B.id = #{id}
+  </select>
+  
+  <select id = "selectBookByName" parameterType = "String" resultMap = "BookPublisherMap">
+     SELECT
+       <include refid = "SqlColumnsBookToPublisher"/>
+     FROM books AS B
+     LEFT OUTER JOIN publishers AS P
+     ON B.publisherId = P.id
+     WHERE B.name LIKE '%' #{name} '%'
+  </select>
+</mapper>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    这个namespace的值很关键,它的值与接口ITeacherMapper的完整包名一致,
+    就是通过它与ITeacherMapper接口建立映射关系的;
+-->
+<mapper namespace = "com.learn.ssm.school.mapper.ITeacherMapper">
+  <!-- 班主任信息 -->
+  <!-- 增 -->
+  <insert id = "insertMasterTeacher" parameterType = "MasterTeacher">
+     INSERT INTO master_teachers
+     <trim prefix = "(" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> id, </if>
+        <if test = "name != null"> name, </if>
+        <if test = "enterTime != null"> entertime, </if>
+        <if test = "leaveTime != null"> leavetime </if>
+     </trim>
+     <trim prefix = "VALUES (" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> #{id}, </if>
+        <if test = "name != null"> #{name}, </if>
+        <if test = "enterTime != null"> #{enterTime}, </if>
+        <if test = "leaveTime != null"> #{leaveTime} </if>
+     </trim>
+  </insert>
+  
+  <!-- 删 -->
+  <delete id = "deleteAllMasterTeachers">
+     DELETE FROM master_teachers
+  </delete>
+  
+  <delete id = "deleteMasterTeachers">
+     DELETE FROM master_teachers
+     WHERE id in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteMasterTeacher" parameterType = "MasterTeacher">
+     DELETE FROM master_teachers
+     WHERE id = #{id}
+  </delete>
+  
+  <delete id = "deleteMasterTeacherById" parameterType = "int">
+     DELETE FROM master_teachers
+     WHERE id = #{masterTeacherId}
+  </delete>
+  
+  <!-- 改 -->
+  <update id = "updateMasterTeacher" parameterType = "MasterTeacher">
+     UPDATE master_teachers
+     <set>
+        <if test = "name != null"> name = #{name}, </if>
+        <if test = "entertime != null"> entertime = #{enterTime}, </if>
+        <if test = "leavetime != null"> leavetime = #{leaveTime}  </if>
+     </set>
+     WHERE id = #{id}
+  </update>
+  <update id = "updateMasterTeacherLeaveTimeById" parameterType = "int">
+     UPDATE master_teachers
+     SET leavetime = NOW()
+     WHERE id = #{masterTeacherId}
+  </update>
+  
+  <!-- 查 -->
+  <select id = "selectAllMasterTeachers" resultType = "MasterTeacher">
+     SELECT *
+     FROM master_teachers
+  </select>
+  
+  <select id = "selectInServiceMasterTeachers"  resultType = "MasterTeacher">
+     SELECT *
+     FROM master_teachers
+     WHERE leavetime IS NULL
+  </select>
+  
+  <select id = "selectMasterTeacherById" parameterType = "int" resultType = "MasterTeacher">
+     SELECT *
+     FROM master_teachers
+     WHERE id = #{masterTeacherId}
+  </select>
+  
+  <!-- 教师信息 -->
+  <!-- 增:使用动态INSERT语句构建SQL语句中的字段列表和字段值列表 -->
+  <insert id = "insertTeacher" parameterType = "Teacher">
+     INSERT INTO teachers
+     <trim prefix = "(" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> id, </if>
+        <if test = "name != null"> name, </if>
+        <if test = "enterTime != null"> entertime, </if>
+        <if test = "leaveTime != null"> leavetime </if>
+     </trim>
+     <trim prefix = "VALUES (" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> #{id}, </if>
+        <if test = "name != null"> #{name}, </if>
+        <if test = "enterTime != null"> #{enterTime}, </if>
+        <if test = "leaveTime != null"> #{leaveTime} </if>
+     </trim>
+  </insert>
+  
+  <!-- 删 -->
+  <delete id = "deleteAllTeachers">
+     DELETE FROM teachers
+  </delete>
+  
+  <delete id = "deleteTeachers">
+     DELETE FROM teachers
+     WHERE id in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteTeacher" parameterType = "Teacher">
+     DELETE FROM teachers
+     WHERE id = #{id}
+  </delete>
+  
+  <delete id = "deleteTeacherById" parameterType = "int">
+     DELETE FROM teachers
+     WHERE id = #{teacherId}
+  </delete>
+  
+  <!-- 改 -->
+  <update id = "updateTeacher" parameterType = "Teacher">
+     UPDATE teachers
+     SET name = #{name}, entertime = #{enterTime}, leavetime = #{leaveTime}
+     <set>
+        <if test = "name != null"> name = #{name}, </if>
+        <if test = "entertime != null"> entertime = #{enterTime}, </if>
+        <if test = "leavetime != null"> leavetime = #{leaveTime}  </if>
+     </set>
+     WHERE id = #{id}
+  </update>
+  <update id = "updateTeacherLeaveTimeById" parameterType = "int">
+     UPDATE teachers
+     SET leavetime = NOW()
+     WHERE id = #{teacherId}
+  </update>
+  
+  <!-- 查 -->
+  <select id = "selectAllTeachers" resultType = "Teacher">
+     SELECT *
+     FROM teachers
+  </select>
+  
+  <select id = "selectInServiceTeachers" resultType = "Teacher">
+     SELECT *
+     FROM teachers
+     WHERE leavetime IS NULL
+  </select>
+  
+  <select id = "selectTeacherById" parameterType = "int" resultType = "Teacher">
+     SELECT *
+     FROM teachers
+     WHERE id = #{teacherId}
+  </select>
+</mapper>

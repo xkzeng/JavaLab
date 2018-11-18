@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    这个namespace的值很关键,它的值与接口IStudentMapper的完整包名一致,
+    就是通过它与IClassesMapper接口建立映射关系的;
+-->
+<mapper namespace = "com.learn.ssm.school.mapper.IStudentMapper">
+  <!-- 增 -->
+  <insert id = "insertStudent" parameterType = "Classes">
+     INSERT INTO students
+     <trim prefix = "(" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> id, </if>
+        <if test = "name != null"> name, </if>
+        <if test = "sex != null"> sex, </if>
+        <if test = "age != null"> age, </if>
+        <if test = "classes != null and classes.id != null"> classesId, </if>
+        <if test = "enterTime != null"> entertime, </if>
+        <if test = "leaveTime != null"> leavetime </if>
+     </trim>
+     <trim prefix = "VALUES (" suffix = ")" suffixOverrides = ",">
+        <if test = "id != null"> #{id}, </if>
+        <if test = "name != null"> #{name}, </if>
+        <if test = "sex != null"> #{sex}, </if>
+        <if test = "age != null"> #{age}, </if>
+        <if test = "classes != null and classes.id != null"> #{classes.id}, </if>
+        <if test = "enterTime != null"> #{enterTime}, </if>
+        <if test = "leaveTime != null"> #{leaveTime} </if>
+     </trim>
+  </insert>
+  
+  <!-- 删 -->
+  <delete id = "deleteAllStudents">
+     DELETE FROM students
+  </delete>
+  
+  <delete id = "deleteStudents">
+     DELETE FROM students
+     WHERE id in
+     <foreach item = "item" index = "index" collection = "array" open = "(" separator  = "," close = ")">
+        #{item}
+     </foreach>
+  </delete>
+  
+  <delete id = "deleteStudent" parameterType = "Student">
+     DELETE FROM students
+     WHERE id = #{id}
+  </delete>
+  
+  <delete id = "deleteStudentById" parameterType = "int">
+     DELETE FROM students
+     WHERE id = #{id}
+  </delete>
+  
+  <!-- 改 -->
+  <update id = "updateStudent" parameterType = "Student">
+     UPDATE students
+     <set>
+        <if test = "name != null"> name = #{name}, </if>
+        <if test = "sex != null"> sex = #{sex}, </if>
+        <if test = "age != null"> age = #{age}, </if>
+        <if test = "classes != null and classes.id != null"> classesId = #{classes.id}, </if>
+        <if test = "entertime != null"> entertime = #{enterTime}, </if>
+        <if test = "leavetime != null"> leavetime = #{leaveTime}  </if>
+     </set>
+     WHERE id = #{id}
+  </update>
+  <update id = "updateStudentLeaveTimeById" parameterType = "int">
+     UPDATE students
+     SET leavetime = NOW()
+     WHERE id = #{id}
+  </update>
+  
+  <!-- 查 -->
+  <select id = "selectAllStudents" resultType = "Student">
+     SELECT *
+     FROM students
+  </select>
+  
+  <select id = "selectJoinedStudents" resultType = "Student">
+     SELECT *
+     FROM students
+     WHERE leavetime IS NULL
+  </select>
+  
+  <select id = "selectQuitedStudents" resultType = "Student">
+     SELECT *
+     FROM students
+     WHERE leavetime IS NOT NULL
+  </select>
+  
+  <select id = "selectStudentById" parameterType = "int" resultType = "Student">
+     SELECT *
+     FROM students
+     WHERE id = #{id}
+  </select>
+  
+  <!-- 学生与班级之间的一对一关系查询时的字段列表定义 -->
+  <sql id = "SqlColumnsStudentToClasses">
+     s.id AS studentId,
+     s.name AS studentName,
+     sex,
+     age,
+     s.classesId AS fkClassesId,
+     s.entertime AS joinSchoolTime,
+     s.leavetime AS quitSchoolTime,
+     c.id AS classesId,
+     c.name AS classesName,
+     c.masterteacherId AS fkMasterTeacherId,
+     c.entertime AS opendTime,
+     c.leavetime AS closeTime,
+     mt.id AS masterTeacherId,
+     mt.name  AS masterTeacherName,
+     mt.entertime AS joinClassesTime,
+     mt.leavetime AS quitClassesTime
+  </sql>
+  
+  <!-- 一个学生在某一时刻只能属于一个班级 -->
+  <resultMap id = "StudentClassesMap" type = "Student">
+     <!-- 描述students表到Student类实体的主键映射 -->
+     <id column = "studentId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+     <!-- 描述其它普通字段到Student类实体属性的映射 -->
+     <result column = "studentName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+     <result column = "sex" jdbcType = "INTEGER" property = "sex" javaType = "int"/>
+     <result column = "age" jdbcType = "INTEGER" property = "age" javaType = "int"/>
+     <result column = "joinSchoolTime" jdbcType = "TIMESTAMP" property = "enterTime" javaType = "java.util.Date"/>
+     <result column = "quitSchoolTime" jdbcType = "TIMESTAMP" property = "leaveTime" javaType = "java.sql.Timestamp"/>
+     
+     <!-- Student到Classes之间1对1关系的描述:students表的外键classesId关联到classes表的主键id -->
+     <association column = "fkClassesId" jdbcType = "INTEGER" property = "classes" javaType = "Classes">
+        <!-- 描述classes表的主键到Classes类实体的主键映射 -->
+        <id column = "classesId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+        <!-- 描述其它普通字段的映射 -->
+        <result column = "classesName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+        <result column = "opendTime" jdbcType = "TIMESTAMP" property = "enterTime" javaType = "java.util.Date"/>
+        <result column = "closeTime" jdbcType = "TIMESTAMP" property = "leaveTime" javaType = "java.sql.Timestamp"/>
+        
+        <!-- 一个班级只能有一个班主任 -->
+	    <association column = "fkMasterTeacherId" jdbcType = "INTEGER" property = "masterTeacher" javaType = "MasterTeacher">
+	       <!-- 描述主键映射 -->
+	       <id column = "masterTeacherId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+	       
+	       <!-- 描述其它普通字段的映射 -->
+	       <result column = "masterTeacherName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+	       <result column = "joinClassesTime" jdbcType = "TIMESTAMP" property = "enterTime" javaType = "java.util.Date"/>
+	       <result column = "quitClassesTime" jdbcType = "TIMESTAMP" property = "leaveTime" javaType = "java.sql.Timestamp"/>
+	    </association>
+     </association>
+     
+     <!-- Student到Subject之间的一对多关系描述 -->
+     <!-- collection column = "id" jdbcType = "INTEGER" property = "subjects" javaType = "ArrayList" ofType = "Subject">
+        <id column = "subjectId" jdbcType = "INTEGER" property = "id" javaType = "int"/>
+        <result column = "subjectName" jdbcType = "VARCHAR" property = "name" javaType = "java.lang.String"/>
+     </collection -->
+  </resultMap>
+  
+  <!-- 左外连接 -->
+  <select id = "selectAllStudentsClassess" resultMap = "StudentClassesMap">
+     SELECT
+       <include refid = "SqlColumnsStudentToClasses"/>
+     FROM students AS s
+     LEFT OUTER JOIN classess AS c ON s.classesId = c.id
+     LEFT OUTER JOIN master_teachers AS mt ON c.masterteacherId = mt.id
+     ORDER BY studentId ASC
+  </select>
+  
+  <select id = "selectStudentAndClassesByStudentId" parameterType = "int" resultMap = "StudentClassesMap">
+     SELECT
+       <include refid = "SqlColumnsStudentToClasses"/>
+     FROM students AS s
+     LEFT OUTER JOIN classess AS c ON s.classesId = c.id
+     LEFT OUTER JOIN master_teachers AS mt ON c.masterteacherId = mt.id
+     WHERE s.id = #{id}
+  </select>
+  
+</mapper>
