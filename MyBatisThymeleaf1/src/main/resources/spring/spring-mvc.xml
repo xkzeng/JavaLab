@@ -41,7 +41,7 @@
     <!--bean id = "freeMarkerConfig" class = "org.springframework.beans.factory.config.PropertiesFactoryBean"-->
         <!-- FreeMarker配置文件路径 -->
         <!--property name = "location" value = "classpath:properties/freemarker.properties" /-->
-    <!--/bean -->
+    <!--/bean-->
     
     <!-- 配置FreeMarker的运行环境 -->
     <bean id = "freeMarkerConfig" class = "org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
@@ -77,7 +77,7 @@
        <!-- 是否启动缓存 -->
        <property name = "cache" value = "false"/>
        <!-- 多视图解析器时用于指定视图解析器的优先级顺序号,数值越小,就越优先执行 -->
-       <property name ="order" value = "1"/>
+       <property name ="order" value = "2"/> <!-- 默认值为Integer.MAX_VALUE = 0x7FFFFFFF -->
     </bean>
     
     <!--
@@ -99,8 +99,6 @@
        <property name = "cacheable" value = "false"/>
        <!-- 渲染视图时使用的字符集 -->
        <property name = "characterEncoding" value = "UTF-8"/>
-       <!-- 多视图解析器时用于指定视图解析器的优先级顺序号,数值越小,就越优先 -->
-       <property name = "order" value = "0"/>
     </bean>
     
     <!-- STEP2: 配置Thymeleaf与Spring集成的Spring模板引擎 -->
@@ -122,6 +120,6 @@
        <!-- 渲染视图时使用的字符集 -->
        <property name = "characterEncoding" value = "UTF-8"/>
        <!-- 多视图解析器时用于指定视图解析器的优先级顺序号,数值越小,就越优先 -->
-       <property name = "order" value = "0"/>
+       <property name = "order" value = "2"/> <!-- 默认值为Integer.MAX_VALUE = 0x7FFFFFFF -->
     </bean>
 </beans>
