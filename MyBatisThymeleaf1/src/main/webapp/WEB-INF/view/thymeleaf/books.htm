@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<HTML>
+   <HEAD>
+      <META http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      <LINK type="text/css" rel="stylesheet" href="css/mystyle.css"/>
+      <TITLE>MyBatis based on Thymeleaf</TITLE>
+   </HEAD>
+   <BODY align = "center">
+      <DIV th:replace = "~{layout/header::book_header}"> </DIV>
+		  <BR>
+		  
+      <DIV th:replace = "layout/book_body::book_body"> </DIV>
+      <BR>
+      
+      <DIV th:replace = "layout/footer::book_footer"> </DIV>
+   </BODY>
+</HTML>
