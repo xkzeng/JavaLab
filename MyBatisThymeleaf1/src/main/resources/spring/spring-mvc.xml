@@ -37,15 +37,20 @@
     <!-- STEP3: 配置动态视图解析器组件(只配置,不开发)
          此处配置使用FreeMarker作为视图渲染组件;
     -->
-    <!-- 配置FreeMarker运行环境 -->
+    <!-- ************ 配置FreeMarker运行环境 ************ -->
     <!--bean id = "freeMarkerConfig" class = "org.springframework.beans.factory.config.PropertiesFactoryBean"-->
         <!-- FreeMarker配置文件路径 -->
         <!--property name = "location" value = "classpath:properties/freemarker.properties" /-->
     <!--/bean-->
-    
-    <!-- 配置FreeMarker的运行环境 -->
     <bean id = "freeMarkerConfig" class = "org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
        <!-- property name = "freemarkerSettings" ref = "freeMarkerConfig"/-->
+       <property name = "freemarkerSettings">
+          <props>
+             <prop key = "number_format">0.##########</prop>
+             <prop key = "datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+             <prop key = "date_format">yyyy-MM-dd</prop>
+          </props>
+       </property>
        <!-- FreeMarker模板文件路径 -->
        <property name = "templateLoaderPath" value = "/WEB-INF/view/"/>
        <!-- 缺省编码 -->
@@ -77,11 +82,11 @@
        <!-- 是否启动缓存 -->
        <property name = "cache" value = "false"/>
        <!-- 多视图解析器时用于指定视图解析器的优先级顺序号,数值越小,就越优先执行 -->
-       <property name ="order" value = "2"/> <!-- 默认值为Integer.MAX_VALUE = 0x7FFFFFFF -->
+       <property name = "order" value = "2"/> <!-- 默认值为Integer.MAX_VALUE = 0x7FFFFFFF -->
     </bean>
     
     <!--
-        配置Thymeleaf视图解析器;
+        ************ 配置Thymeleaf视图解析器 ************
         ServletContextTemplateResolver: 加载Thymeleaf模板;
         SpringTemplateEngine: 处理模板并渲染结果;
         ThymeleafViewResolver: 把逻辑视图名称解析到Thymeleaf的物理视图上;
@@ -121,5 +126,21 @@
        <property name = "characterEncoding" value = "UTF-8"/>
        <!-- 多视图解析器时用于指定视图解析器的优先级顺序号,数值越小,就越优先 -->
        <property name = "order" value = "2"/> <!-- 默认值为Integer.MAX_VALUE = 0x7FFFFFFF -->
+    </bean>
+    
+    <!-- ************ 配置JSP/JSTL视图解析器 ************ -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+       <!-- 视图类 -->
+       <property name = "viewClass" value = "org.springframework.web.servlet.view.JstlView"/>
+       <!-- 视图名规则 -->
+       <!-- property name = "viewNames" value = "*.jsp"/ -->
+       <!-- 返回视图页面的前缀 -->
+       <property name = "prefix" value = "/WEB-INF/view/jsp/"/>
+       <!-- 返回视图页面的后缀 -->
+       <property name = "suffix" value = ".jsp"/>
+       <!-- 视图内容的类型 -->
+       <property name = "contentType" value = "text/html;charset=UTF-8"/>
+       <!-- 多视图解析器时用于指定视图解析器的优先级顺序号,数值越小,就越优先 -->
+       <property name = "order" value = "3"/> <!-- 默认值为Integer.MAX_VALUE = 0x7FFFFFFF -->
     </bean>
 </beans>
