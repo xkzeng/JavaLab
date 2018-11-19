@@ -132,6 +132,7 @@
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
        <!-- 视图类 -->
        <property name = "viewClass" value = "org.springframework.web.servlet.view.JstlView"/>
+       <!--property name = "viewClass" value = "org.springframework.web.servlet.view.InternalResourceView"/ OK-->
        <!-- 视图名规则 -->
        <!-- property name = "viewNames" value = "*.jsp"/ -->
        <!-- 返回视图页面的前缀 -->
