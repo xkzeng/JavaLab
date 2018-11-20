@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+  xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+  xmlns = "http://www.springframework.org/schema/beans"
+  xmlns:mvc ="http://www.springframework.org/schema/mvc"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation = "http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+    
+    <!-- STEP1: 自动配置基于注解的处理器映射器组件和处理器适配器组件(只配置,不开发);
+         默认自动使用RequestMappingHandlerMapping类充当映射器;
+         默认自动使用RequestMappingHandlerAdapter类充当适配器;
+         如果要使用标签<mvc:annotation-driven>,则需要在文件头部的<beans>标签中指定"xmlns:mvc",
+         并在xsi:schemaLocation中指定spring-mvc的版本信息;
+    -->
+    <mvc:annotation-driven/>
+    
+    <!-- STEP2: 自动配置处理器控制器(需开发);
+         控制器是开发者自己实现的,用于实现HTTP请求的业务逻辑控制;
+         自动配置就是自动扫描Controller、Service、Resource、Component等注解所修饰的类所在的包下面的全部类;
+         如果要使用标签<context:component-scan>,则需要在文件头部的<beans>标签中指定"xmlns:context",
+         并在xsi:schemaLocation中指定spring-context的版本信息;
+    -->
+    <context:component-scan base-package="com.learn.mybatis.controller"/>
+    
+    <!-- STEP3: 配置动态视图解析器组件(只配置,不开发)
+         此处配置使用Thymeleaf作为视图渲染组件;
+         ServletContextTemplateResolver: 加载Thymeleaf模板;
+         SpringTemplateEngine: 处理模板并渲染结果;
+         ThymeleafViewResolver: 把逻辑视图名称解析到Thymeleaf的物理视图上;
+    -->
+    <!-- STEP1: 配置Thymeleaf的模板解析器 -->
+    <!--bean id = "thymeleafTemplateResolver" class = "org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver" OK -->
+    <bean id = "thymeleafTemplateResolver" class = "org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+       <!-- 返回视图页面的前缀 -->
+       <property name = "prefix" value = "/WEB-INF/view/"/>
+       <!-- 返回视图页面的后缀 -->
+       <property name = "suffix" value = ".htm"/>
+       <!-- Thymeleaf的视图模式 -->
+       <property name = "templateMode" value = "HTML5"/>
+       <!-- 关闭视图的缓存,否则设计视图时看不到实时页面 -->
+       <property name = "cacheable" value = "false"/>
+       <!-- 渲染视图时使用的字符集 -->
+       <property name = "characterEncoding" value = "UTF-8"/>
+    </bean>
+    
+    <!-- STEP2: 配置Thymeleaf与Spring集成的Spring模板引擎 -->
+    <bean id = "thymeleafTemplateEngine" class = "org.thymeleaf.spring5.SpringTemplateEngine">
+       <!-- 内嵌的模板解析器对象 -->
+       <property name = "templateResolver" ref = "thymeleafTemplateResolver"/>
+    </bean>
+    
+    <!-- STEP3: 配置Thymeleaf与Spring集成的视图解析器 -->
+    <bean id = "thymeleafViewResolver" class = "org.thymeleaf.spring5.view.ThymeleafViewResolver">
+       <!-- 视图类 -->
+       <property name = "viewClass" value = "org.thymeleaf.spring5.view.ThymeleafView"/>
+       <!-- 视图名规则 -->
+       <!-- property name = "viewNames" value = "*.htm"/ -->
+       <!-- 内嵌的模板引擎对象 -->
+       <property name = "templateEngine" ref = "thymeleafTemplateEngine"/>
+       <!-- 需要渲染的内容的类型 -->
+       <property name = "contentType" value = "text/html;charset=UTF-8"/>
+       <!-- 渲染视图时使用的字符集 -->
+       <property name = "characterEncoding" value = "UTF-8"/>
+       <!-- 多视图解析器时用于指定视图解析器的优先级顺序号,数值越小,就越优先 -->
+       <property name = "order" value = "2"/> <!-- 默认值为Integer.MAX_VALUE = 0x7FFFFFFF -->
+    </bean>
+</beans>

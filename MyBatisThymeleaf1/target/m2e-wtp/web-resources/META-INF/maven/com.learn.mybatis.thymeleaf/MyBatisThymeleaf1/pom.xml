@@ -1,0 +1,9 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.learn.mybatis.thymeleaf</groupId>
+  <artifactId>MyBatisThymeleaf1</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+  <name>MyBatisThymeleaf1</name>
+  <description>使用Thymeleaf作为视图模板解析器</description>
+</project>
