@@ -1,0 +1,47 @@
+
+<SPAN th:fragment = "book_body">
+  <DIV align = "center">
+    <TABLE width = "90%" border="1" cellspacing="1" cellpadding="1">
+      <TR>
+        <TD>
+          &nbsp;共有 <FONT size = "5" face = "新宋体" color = "Red" th:text = "${number_of_books}"> </FONT>本图书
+          &nbsp;这个页面是使用Thymeleaf渲染出来的;
+        </TD>
+      </TR>
+    </TABLE>
+  </DIV>
+  <BR>
+
+  <DIV align = "center">
+    <TABLE width = "90%" border="1" cellspacing="1" cellpadding="1">
+      <TR align="middle" bgcolor="#DEDEDE">
+        <TH>序号</TH>
+        <TH>编号</TH>
+        <TH>名称</TH>
+        <TH>作者</TH>
+        <TH>row index</TH>
+        <TH>row count</TH>
+        <TH>row size</TH>
+        <TH>row even</TH>
+        <TH>row odd</TH>
+        <TH>row first</TH>
+        <TH>row last</TH>
+      </TR>
+      <!--TR bgcolor = "#D1EEEE"-->
+      <TR th:each = "book,status:${bookList}" th:bgcolor = "${status.even} ? '#D1EEEE' : ''">
+        <TD th:text = "${status.count}">&nbsp;序号</TD>
+        <TD th:text = "${book.bookId}">&nbsp;编号</TD>
+        <TD th:text = "${book.bookName}">&nbsp;名称</TD>
+        <TD th:text = "${book.author}">&nbsp;作者</TD>
+        
+        <TD th:text = "${status.index}">&nbsp;row index</TD>
+        <TD th:text = "${status.count}">&nbsp;row count</TD>
+        <TD th:text = "${status.size}">&nbsp;row size</TD>
+        <TD th:text = "${status.even}">&nbsp;row even</TD>
+        <TD th:text = "${status.odd}">&nbsp;row odd</TD>
+        <TD th:text = "${status.first}">&nbsp;row first</TD>
+        <TD th:text = "${status.last}">&nbsp;row last</TD>
+      </TR>
+    </TABLE>
+  </DIV>
+</SPAN>

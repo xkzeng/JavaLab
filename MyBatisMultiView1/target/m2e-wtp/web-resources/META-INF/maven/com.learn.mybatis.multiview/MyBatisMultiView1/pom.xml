@@ -1,0 +1,10 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.learn.mybatis.multiview</groupId>
+  <artifactId>MyBatisMultiView1</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+  <name>MyBatisMultiView1</name>
+  <description>SSM同时支持模板视图JSP/FreeMarker/Thymeleaf;
+方式1:使用viewNames属性值指定模板路径前缀通配规则</description>
+</project>
