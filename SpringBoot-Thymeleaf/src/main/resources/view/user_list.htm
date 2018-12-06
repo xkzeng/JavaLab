@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+   <head>
+      <meta http-equiv = "Content-Type" content = "text/html;charset=UTF-8"/>
+      <link type = "text/css" rel = "stylesheet" href ="/css/mystyle.css"/>
+      <title>SpringBoot集成Thymeleaf</title>
+   </head>
+   
+   <body align = "center">
+      <table border = "1"  width = "50%" align = "center">
+         <thead>
+            <tr>
+               <th>SEQ</th>
+               <th>ID</th>
+               <th>NAME</th>
+               <th>SEX</th>
+               <th>AGE</th>
+               <th>ADDRESS</th>
+            </tr>
+         </thead>
+         
+         <tbody>
+            <tr th:each = "user,status: ${userList}" th:bgcolor = "${status.even} ? '#D1EEEE' : ''">
+               <td th:text  = "${status.count}">SEQ</td>
+               <td th:text = "${user.id}">ID</td>
+               <td th:text = "${user.name}">NAME</td>
+               <td th:text = "${user.sex}">SEX</td>
+               <td th:text = "${user.age}">AGE</td>
+               <td th:text = "${user.address}">ADDRESS</td>
+            </tr>
+         </tbody>
+      </table>
+      
+      <img alt = "java_logo6.jpg" src = "/pic/java_logo6.jpg" />
+      <img alt = "java_logo5.jpg" src = "/pic/java_logo5.jpg" />
+      <img alt = "java_logo4.jpg" src = "/pic/java_logo4.jpg" />
+      
+   </body>
+</html>
