@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.learn.springboot</groupId>
-  <artifactId>01-SpringBoot</artifactId>
+  <artifactId>SpringBoot1</artifactId>
   <version>1.0.0</version>
-  <name>SpringBootDaemon</name>
+  <name>SpringBootDemo1</name>
   
   <properties>
      <!-- 修改JDK版本为1.8 -->
