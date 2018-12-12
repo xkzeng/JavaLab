@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+  <settings>
+     <!-- 打印SQL语句 -->
+     <setting name = "logImpl" value = "STDOUT_LOGGING"/>
+     
+     <!-- 查询字段为空时依旧返回至对象 -->
+     <setting name = "callSettersOnNulls" value = "true"/>
+     
+     <!-- 懒加载时设置为true -->
+     <setting name = "lazyLoadingEnabled" value = "true"/>
+     
+     <!-- 积极加载设置为false -->
+     <setting name = "aggressiveLazyLoading" value = "false"/>
+     
+     <!-- 打开二级缓存的总开关:打开二级缓存时,一级缓存就失效了,所有SqlSession共享二级缓存 -->
+     <setting name = "cacheEnabled" value = "true"/>
+  </settings>
+  
+  <typeAliases>
+     <package name="com.learn.springboot.entity" />
+  </typeAliases>
+  
+  <!-- mappers> SpringBoot中无效,原因待查;
+    <package name="com.learn.springboot.mapper"/>
+  </mappers -->
+</configuration>
